@@ -38,7 +38,7 @@ namespace Homies.Services
         public async Task<bool> EventExistsAsync(int id)
         {
             bool eventExists = await context.Events.AnyAsync(e => e.Id == id);
-
+            
             return eventExists;
         }
 
@@ -61,7 +61,10 @@ namespace Homies.Services
         public async Task<EventDetailsViewModel> GetEventDetailsAsync(int id)
         {
             var eventDetails = await context.Events
-                .FindAsync(id);
+                .Where(e => e.Id == id)
+                .Include(e => e.Organiser)
+                .Include(e => e.Type)                
+                .FirstOrDefaultAsync();
 
             if (eventDetails == null)
             {
